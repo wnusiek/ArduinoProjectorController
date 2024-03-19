@@ -1,81 +1,86 @@
 void setup() {
-Serial.begin(9600);
+  Serial.begin(9600);
+/*
 
-//SYGNALIZACJA
-pinMode(8, OUTPUT); //Dioda jako wyjście (ZIELONA)
-pinMode(9, OUTPUT); //Dioda jako wyjście (CZERWONA)
-pinMode(10, OUTPUT); //Dioda jako wyjście (ŻÓŁTA)
-pinMode(11, OUTPUT); //Dioda jako wyjście (NIEBIESKA)
-pinMode(12, OUTPUT); //Dioda jako wyjście (BIAŁA)
+Diody       outputPins
+zielona     8
+czerwona    9
+żółta       10
+niebieska   11
+biała       12
 
-digitalWrite(8, LOW); //Wyłączenie diody
-digitalWrite(9, LOW); //Wyłączenie diody
-digitalWrite(10, LOW); //Wyłączenie diody
-digitalWrite(11, LOW); //Wyłączenie diody
-digitalWrite(12, LOW); //Wyłączenie diody
+Przyciski   inputPins
+Power       3
+Computer 1  4
+Computer 2  5
+HDMI        6
+Video       7
 
-//PRZYCISKI
-pinMode(3, INPUT_PULLUP); //POWER ON/OFF
-pinMode(4, INPUT_PULLUP); //SOURCE COMPUTER 1
-pinMode(5, INPUT_PULLUP); //SOURCE COMPUTER 1
-pinMode(6, INPUT_PULLUP); //SOURCE HDMI
-pinMode(7, INPUT_PULLUP); //SOURCE VIDEO
+*/
+  int outputPins [] = {8,9,10,11,12};
+  for (int i = 0; i < sizeof(outputPins)/sizeof(outputPins[0]); i++){
+    pinMode(outputPins[i], OUTPUT);     //USTAWIENIE WYJŚĆ SYGNALIZACYJNYCH
+    digitalWrite(outputPins[i], LOW);   //WYŁĄCZENIE DIOD
+  }
+
+  int inputPins [] = {3,4,5,6,7};
+  for (int i = 0; i < sizeof(inputPins)/sizeof(inputPins[0]); i++){
+    pinMode(inputPins[i], INPUT_PULLUP);    //USTAWIENIE PRZYCISKÓW
+  }
+
 }
 
-boolean isOn = false;
+class Button {
+private:
+  String name;
+  int input;
+  String projectorCommand;
+  int output;
+
+public:
+  Button(String name, int input, String projectorCommand, int output) {
+    this->name = name;
+    this->input = input;
+    this->projectorCommand = projectorCommand;
+    this->output = output;
+  }
+
+  void checkIfButtonPressed() {
+
+    if (digitalRead(this->input) == LOW) {
+      digitalWrite(this->output, HIGH);
+      Serial.println(this->projectorCommand);
+      delay(200);
+    } else {
+      digitalWrite(this->output, LOW);
+    }
+  };
+
+};
+
+  boolean isOn = false;
+
+  String returnPowerCommand() {
+    if (isOn == true) {
+      isOn = false;
+      return "PWR OFF\r\n";
+    } else {
+      isOn = true;
+      return "PWR ON\r\n";
+    }
+  };
+
+  Button power("Power", 3, returnPowerCommand(), 8);
+  Button computer1("Computer 1 D-SUB VGA", 4, "SOURCE 11\r\n", 9);
+  Button computer2("Computer 2 D-SUB VGA", 5, "SOURCE 21\r\n", 10);
+  Button hdmi("HDMI", 6, "SOURCE 30\r\n", 11);
+  Button video("Video", 7, "SOURCE 41\r\n", 12);
+  Button buttons[] = {power, computer1, computer2, hdmi, video};
+
 void loop() {
 
-//POWER ON/OFF
-if (digitalRead(3) == LOW) { //Jeśli przycisk wciśnięty
-digitalWrite(8, HIGH); //Włącz diodę zieloną
-  if (isOn == true){
-  Serial.println("PWR OFF\r\n");
-  delay(200);
-  isOn = false
-  } else {
-  Serial.println("PWR ON\r\n");
-  delay(200); 
-  isOn = true;
+  for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++) {
+    buttons[i].checkIfButtonPressed();
   }
-} else { //Jeśli warunek  przycisk nie jest wciśnięty
-digitalWrite(8, LOW); //Wyłącz diodę
-}
-
-//SOURCE COMPUTER 1
-if (digitalRead(4) == LOW) { //Jeśli przycisk wciśnięty
-digitalWrite(9, HIGH); //Włącz diodę żółtą
-Serial.println("SOURCE 11\r\n");
-delay(200);
-} else { //Jeśli warunek  przycisk nie jest wciśnięty
-digitalWrite(9, LOW); //Wyłącz diodę
-}
-
-//SOURCE COMPUTER 2
-if (digitalRead(5) == LOW) { //Jeśli przycisk wciśnięty
-digitalWrite(10, HIGH); //Włącz diodę żółtą
-Serial.println("SOURCE 21\r\n");
-delay(200);
-} else { //Jeśli warunek  przycisk nie jest wciśnięty
-digitalWrite(10, LOW); //Wyłącz diodę
-}
-
-//SOURCE HDMI
-if (digitalRead(6) == LOW) { //Jeśli przycisk wciśnięty
-digitalWrite(11, HIGH); //Włącz diodę czerwoną
-Serial.println("SOURCE 30\r\n");
-delay(200);
-} else { //Jeśli warunek  przycisk nie jest wciśnięty
-digitalWrite(11, LOW); //Wyłącz diodę
-}
-
-//SOURCE VIDEO 
-if (digitalRead(7) == LOW) { //Jeśli przycisk wciśnięty
-digitalWrite(12, HIGH); //Włącz diodę czerwoną
-Serial.println("SOURCE 41\r\n");
-delay(200);
-} else { //Jeśli warunek  przycisk nie jest wciśnięty
-digitalWrite(12, LOW); //Wyłącz diodę
-}
-
 
 }
