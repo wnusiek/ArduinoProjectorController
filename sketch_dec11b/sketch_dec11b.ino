@@ -22,20 +22,20 @@ pinMode(6, INPUT_PULLUP); //SOURCE HDMI
 pinMode(7, INPUT_PULLUP); //SOURCE VIDEO
 }
 
-boolean powerOffAvailable = false;
+boolean isOn = false;
 void loop() {
 
 //POWER ON/OFF
 if (digitalRead(3) == LOW) { //Jeśli przycisk wciśnięty
 digitalWrite(8, HIGH); //Włącz diodę zieloną
-  if (powerOffAvailable == true){
+  if (isOn == true){
   Serial.println("PWR OFF\r\n");
   delay(200);
-  powerOffAvailable = false
+  isOn = false
   } else {
   Serial.println("PWR ON\r\n");
   delay(200); 
-  powerOffAvailable = true;
+  isOn = true;
   }
 } else { //Jeśli warunek  przycisk nie jest wciśnięty
 digitalWrite(8, LOW); //Wyłącz diodę
