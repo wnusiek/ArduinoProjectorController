@@ -64,7 +64,8 @@ public:
     if (isOn == true) {
       isOn = false;
       return "PWR OFF\r\n";
-    } else {
+    } 
+    if (isOn == false) {
       isOn = true;
       return "PWR ON\r\n";
     }
