@@ -16,8 +16,8 @@ public:
 //  boolean getState();  
   void setState(boolean state);
   void init();
-  void turnOn();
-  void turnOff();
+  void on();
+  void off();
 
 };
 

@@ -20,13 +20,13 @@ void Led::setState(boolean state){
 
 void Led::init(){
   pinMode(this->pin, OUTPUT);
-  turnOff();
+  off();
 }
-void Led::turnOn(){
+void Led::on(){
   digitalWrite(this->pin, HIGH);
   setState(true);
 }
-void Led::turnOff(){
+void Led::off(){
   digitalWrite(this->pin, LOW);
   setState(false);
 }

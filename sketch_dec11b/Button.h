@@ -14,8 +14,10 @@ private:
 
 public:
   Button(String name, int pin, String projectorCommand, Led led);
-  void checkIfButtonPressed();
-
+  boolean isPressed();
+  void sendCommand();
+  Led getLed();
+  
 };
 
 #endif
