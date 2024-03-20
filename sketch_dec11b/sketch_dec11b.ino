@@ -1,55 +1,11 @@
+#include "Led.h"
+#include "Button.h"
+
 void setup() {
   Serial.begin(9600);
-  
-/*
-Przyciski   inputPins  Diody       outputPins
-Power       3          zielona     8
-Computer 1  4          czerwona    9
-Computer 2  5          żółta       10
-HDMI        6          niebieska   11
-Video       7          biała       12
-*/
 
-  int outputPins [] = {8,9,10,11,12};
-  for (int i = 0; i < sizeof(outputPins)/sizeof(outputPins[0]); i++){
-    pinMode(outputPins[i], OUTPUT);     //USTAWIENIE WYJŚĆ SYGNALIZACYJNYCH
-    digitalWrite(outputPins[i], LOW);   //WYŁĄCZENIE DIOD
-  }
-
-  int inputPins [] = {3,4,5,6,7};
-  for (int i = 0; i < sizeof(inputPins)/sizeof(inputPins[0]); i++){
-    pinMode(inputPins[i], INPUT_PULLUP);    //USTAWIENIE PRZYCISKÓW
-  }
-  
 }
 
-class Button {
-private:
-  String name;
-  int input;
-  String projectorCommand;
-  int output;
-
-public:
-  Button(String name, int input, String projectorCommand, int output) {
-    this->name = name;
-    this->input = input;
-    this->projectorCommand = projectorCommand;
-    this->output = output;
-  }
-
-  void checkIfButtonPressed() {
-    if (digitalRead(this->input) == LOW) {
-      digitalWrite(this->output, HIGH);
-      Serial.println(this->projectorCommand);
-      delay(300);
-    } else {
-      digitalWrite(this->output, LOW);
-      delay(10);
-    }
-  };
-
-};
   boolean isOn = true;
 
   String returnPowerCommand() {
@@ -67,15 +23,20 @@ public:
 
 
 void loop() {
+  Led powerLed("zielona", 8);
+  Led computer1Led("czerwona", 9);
+  Led computer2Led("żółta", 10);
+  Led hdmiLed("niebieska", 11);
+  Led videoLed("biała", 12);
   
-  Button power("Power", 3, returnPowerCommand(), 8);
-  Button computer1("Computer 1 D-SUB VGA", 4, "SOURCE 11\r\n", 9);
-  Button computer2("Computer 2 D-SUB VGA", 5, "SOURCE 21\r\n", 10);
-  Button hdmi("HDMI", 6, "SOURCE 30\r\n", 11);
-  Button video("Video", 7, "SOURCE 41\r\n", 12);
-  Button buttons[] = {power, computer1, computer2, hdmi, video};
+  Button powerButton("Power", 3, returnPowerCommand(), powerLed);
+  Button computer1Button("Computer 1 D-SUB VGA", 4, "SOURCE 11\r\n", computer1Led);
+  Button computer2Button("Computer 2 D-SUB VGA", 5, "SOURCE 21\r\n", computer2Led);
+  Button hdmiButton("HDMI", 6, "SOURCE 30\r\n", hdmiLed);
+  Button videoButton("Video", 7, "SOURCE 41\r\n", videoLed);
+  
+Button buttons[] = {powerButton, computer1Button, computer2Button, hdmiButton, videoButton};
   for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++) {
-    
     buttons[i].checkIfButtonPressed();
   }
 
