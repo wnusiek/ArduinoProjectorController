@@ -19,6 +19,10 @@ Led Button::getLed(){
   return led;
 }
 
+String Button::getProjectorCommand(){
+  return projectorCommand;
+}
+
 
 
 

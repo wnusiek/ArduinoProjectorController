@@ -7,10 +7,6 @@ void setup() {
 
 boolean isOn = false;
 
-String returnPowerCommand() {
-  return isOn ? "PWR OFF\r\n" : "PWR ON\r\n";
-}
-
 Led powerLed("zielona", 8);
 Led computer1Led("czerwona", 9);
 Led computer2Led("żółta", 10);
@@ -21,9 +17,16 @@ Led leds[] = {
   powerLed, computer1Led, computer1Led, computer2Led, hdmiLed, videoLed};
 Led activeSourceLed;
 
+String getActiveSource(){
+  Serial.println("SOURCE?\r\n");
+  delay(2000);
+  Serial.println(Serial.readString().substring(7,8));
+  return Serial.readString();
+}
+
 void warmup(){
-    int del = 90;
-    for (int j = 0; j < 80; j++){
+    int del = 80;
+    for (int j = 0; j < 70; j++){
     for (int i = 0; i < sizeof(leds)/sizeof(leds[0]); i++){
       leds[i].on();
       delay(del);
@@ -47,13 +50,23 @@ Button videoButton("Video", 7, "SOURCE 41\r\n", videoLed);
 Button buttons[] = {
   computer1Button, computer2Button, hdmiButton, videoButton  };
 
+Led findActiveSourceLed(){
+  for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++){
+    if (buttons[i].getProjectorCommand().substring(7,8) == getActiveSource().substring(7,8)){
+      return buttons[i].getLed();
+    }
+  }
+}
+
 void loop() {
 
   if (powerOnButton.isPressed() && !isOn){
     isOn = true;
     powerOnButton.sendCommand();
-    warmup();
+//    warmup();
     powerLed.on();
+    activeSourceLed = findActiveSourceLed();
+    activeSourceLed.on();
 
   } 
   if (powerOffButton.isPressed() && isOn){

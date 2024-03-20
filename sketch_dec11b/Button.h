@@ -17,7 +17,7 @@ public:
   boolean isPressed();
   void sendCommand();
   Led getLed();
-  
+  String getProjectorCommand();
 };
 
 #endif
