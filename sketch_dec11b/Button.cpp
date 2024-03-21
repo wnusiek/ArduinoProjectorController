@@ -16,11 +16,11 @@ void Button::sendCommand(){
   delay(300);
 }
 Led Button::getLed(){
-  return led;
+  return this->led;
 }
 
 String Button::getProjectorCommand(){
-  return projectorCommand;
+  return this->projectorCommand;
 }
 
 

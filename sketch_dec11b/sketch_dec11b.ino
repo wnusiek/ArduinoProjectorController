@@ -19,8 +19,7 @@ Led activeSourceLed;
 
 String getActiveSource(){
   Serial.println("SOURCE?\r\n");
-  delay(2000);
-  Serial.println(Serial.readString().substring(7,8));
+  delay(500);
   return Serial.readString();
 }
 
@@ -51,8 +50,10 @@ Button buttons[] = {
   computer1Button, computer2Button, hdmiButton, videoButton  };
 
 Led findActiveSourceLed(){
-  for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++){
-    if (buttons[i].getProjectorCommand().substring(7,8) == getActiveSource().substring(7,8)){
+   String activeSourceNumber = getActiveSource().substring(7,9);
+  for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++){ 
+    String sourceNumber = buttons[i].getProjectorCommand().substring(7,9);
+    if (sourceNumber == activeSourceNumber){
       return buttons[i].getLed();
     }
   }
